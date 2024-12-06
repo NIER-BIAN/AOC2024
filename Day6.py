@@ -87,19 +87,14 @@ with open('input.txt', 'r') as file:
         matrix.append([char for char in line.strip()])
 
 def rotate_matrix(matrix):
-    
-    rows = len(matrix)
-    cols = len(matrix[0])
-
-    # initialise empty matrix of same dimensions
-    new_matrix = [[" " for _ in range(rows)] for _ in range(cols)]
-
-    # rotate 90 deg anti-clockwise
-    for i in range(rows):
-        for j in range(cols):
-            new_matrix[cols - 1 - j][i] = matrix[i][j]
-            
-    return new_matrix
+    n = len(matrix)
+    for i in range(n // 2):
+        for j in range(i, n - i - 1):
+            temp = matrix[i][j]
+            matrix[i][j] = matrix[j][n - 1 - i]
+            matrix[j][n - 1 - i] = matrix[n - 1 - i][n - 1 - j]
+            matrix[n - 1 - i][n - 1 - j] = matrix[n - 1 - j][i]
+            matrix[n - 1 - j][i] = temp
 
 rows = len(matrix)
 cols = len(matrix[0])
@@ -129,7 +124,7 @@ while True:
 
     # initialise conditions
     sim_matrix[start_row-1][start_col] = '0' # add new blocker
-    sim_matrix = rotate_matrix(sim_matrix) # introduce point we'd like to get back to
+    rotate_matrix(sim_matrix) # introduce point we'd like to get back to
                 
     for r in range(sim_rows):
         for c in range(sim_cols):
@@ -159,7 +154,7 @@ while True:
             corners_hit_in_loop += 1
         
             # Rotate the matrix 90 degrees anti-clockwise
-            sim_matrix = rotate_matrix(sim_matrix)
+            rotate_matrix(sim_matrix)
         
             # Update dimensions after rotation
             sim_rows, sim_cols = sim_cols, sim_rows
@@ -188,7 +183,7 @@ while True:
     if matrix[start_row-1][start_col] == '#':
 
         # Rotate the matrix 90 degrees anti-clockwise
-        matrix = rotate_matrix(matrix)
+        rotate_matrix(matrix)
         
         # Update dimensions after rotation
         rows, cols = cols, rows
@@ -215,10 +210,3 @@ while True:
         start_row -= 1
 
 print(ans)
-
-# 18 is 1
-# 28 is 2
-# 32 is 5
-# 34 is 4
-# 41 is 3
-# 43 is 6
